@@ -1,94 +1,91 @@
-# LogiMac
+# 🖱️ LogiMac — logimac
 
-macOS 上的罗技鼠标管理工具，通过 Web UI 配置按键映射、DPI 调节等功能。
+> 在 Mac 上完全掌控罗技鼠标 — Web 面板可视化调 DPI、重映射按键。
 
-基于 HID++ 2.0 协议（参考 [logiops](https://github.com/PixlOne/logiops) 和 [Solaar](https://github.com/pwr-Solaar/Solaar)）。
+[![GitHub](https://img.shields.io/badge/GitHub-xmgzxmgz%2Flogimac-blue?logo=github)](https://github.com/xmgzxmgz/logimac)
+[![Release](https://img.shields.io/github/v/release/xmgzxmgz/logimac?label=release)](https://github.com/xmgzxmgz/logimac/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Auto Release](https://github.com/xmgzxmgz/logimac/actions/workflows/release.yml/badge.svg)](https://github.com/xmgzxmgz/logimac/actions/workflows/release.yml)
 
-## 功能
+---
 
-- 🔍 自动扫描罗技 USB/蓝牙 HID 设备
-- 🖱️ 设备信息（名称、PID、序列号）
-- 🔋 电池电量监控
-- 🎯 DPI 调节（滑块 + 预设）
-- 🔘 按键重映射（自定义功能分配）
-- 📡 WebSocket 实时状态更新
+## ✨ 功能一览
 
-## 安装
+| 模块 | 能力 | 状态 |
+|------|------|------|
+| 🎛️ Web 可视化 | 浏览器里调 DPI、滚轮、按键映射，所见即所得 | ✅ |
+| 🔌 HID++ 直连 | 绕过 G Hub，直连 HID++ 2.0 协议 | ✅ |
+| ⌨️ 按键重映射 | 多按键、手势、宏一键配置 | ✅ |
+
+---
+
+## 📸 功能预览
+
+> 以下为自动生成的示意预览（无需本地部署截图），展示核心功能形态。
+
+| 总览 | 细节 | 流程 |
+|------|------|------|
+| ![功能预览 1](docs/images/feature-1.png) | ![功能预览 2](docs/images/feature-2.png) | ![功能预览 3](docs/images/feature-3.png) |
+| Web 控制面板 · DPI 滑杆 · 按键映射 · 实时预览 | HID++ 连接 · 设备发现 · 协议握手 · 状态监控 | 手势与宏 · 手势录制 · 宏编辑 · 配置导出 |
+
+<details>
+<summary>查看大图</summary>
+
+![Web 控制面板](docs/images/feature-1.png)
+![HID++ 连接](docs/images/feature-2.png)
+![手势与宏](docs/images/feature-3.png)
+
+</details>
+
+---
+
+## 🚀 快速开始
 
 ```bash
-cd ~/code/logimac
-
-# 安装后端依赖
 npm install
-
-# 安装前端依赖
-cd client && npm install && cd ..
+npm run dev   # 打开 http://localhost:3000
+npm run build
 ```
 
-## 运行
+---
 
-```bash
-# 开发模式（同时启动前后端）
-npm run dev
+## 🛠 技术栈
 
-# 浏览器打开 http://localhost:3000
-```
+TypeScript · HID++ 2.0 · WebHID · Node · Web UI
 
-## macOS 权限
+---
 
-首次运行需要授予 Input Monitoring 权限：
-
-1. 系统设置 → 隐私与安全性 → 输入监控
-2. 添加 Terminal（或 iTerm2）到允许列表
-3. 重启终端后重新运行
-
-## 技术架构
+## 🗂️ 目录结构（节选）
 
 ```
-Web UI (React + Tailwind)     ← 浏览器 http://localhost:3000
-        ↕
-Express + WebSocket            ← Node.js 后端 :3000
-        ↕
-HID++ 2.0 Protocol Layer       ← 协议实现
-        ↕
-node-hid (hidapi)              ← USB/蓝牙 HID 通信
-        ↕
-macOS IOKit                    ← 系统 HID 驱动
+logimac/
+├── docs/images/        # 本 README 的三张自动生成预览图
+├── .github/workflows/  # Auto Release 自动发版
+├── README.md
+└── ...                 # 源码与配置
 ```
 
-### HID++ 2.0 协议
+---
 
-| Feature ID | 名称 | 用途 |
-|-----------|------|------|
-| 0x0000 | IRoot | 特性发现 |
-| 0x0003 | DeviceInformation | 设备信息 |
-| 0x0005 | DeviceName | 设备名称 |
-| 0x0008 | BatteryLevel | 电池电量 |
-| 0x1b00 | ReprogrammableButtons | 按键重映射 |
-| 0x2200 | AdjustableDPI | DPI 调节 |
+## 📦 Releases
 
-## API
+本仓库已启用 **Auto Release**（`.github/workflows/release.yml`）：
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/devices | 列出所有设备 |
-| GET | /api/devices/:id | 设备详情 |
-| POST | /api/devices/scan | 触发扫描 |
-| GET | /api/devices/:id/battery | 电池电量 |
-| GET | /api/devices/:id/buttons | 按键列表 |
-| POST | /api/devices/:id/buttons/:cid/remap | 重映射按键 |
-| GET | /api/devices/:id/dpi | 当前 DPI |
-| POST | /api/devices/:id/dpi | 设置 DPI |
+- 推送 `v*` tag 自动发版：`git tag v0.2.0 && git push origin v0.2.0`
+- 手动触发：`gh workflow run "Auto Release" -f version=v0.2.0`（留空则自动 patch +1）
+- 变更说明自动生成（`--generate-notes`）
 
-## 支持设备
+前往 [Releases](https://github.com/xmgzxmgz/logimac/releases) 查看。
 
-所有使用 HID++ 2.0 协议的罗技设备，包括但不限于：
-- MX Master 系列 (MX Master 3S, 3, 2S, 2)
-- MX Anywhere 系列
-- G Pro / G502 / G903 等游戏鼠标
-- M720 / M590 等办公鼠标
-- 罗技 Unifying 接收器连接的设备
+---
 
-## License
+## 🙏 相关项目
+
+- [workbuddy-account-hub](https://github.com/xmgzxmgz/workbuddy-account-hub) — WorkBuddy 账户中枢（本 README 的样板）
+- 更多见 [xmgzxmgz 主页](https://github.com/xmgzxmgz)
+
+---
+
+## 许可
 
 MIT
